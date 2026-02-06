@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fe-service
+spec:
+  type: NodePort # this makes it accessible from outside the Cluster!
+  selector:
+    app: fe
+  ports:
+    - protocol: TCP
+      port: 80 # Port the SERVICE listens to inside the cluster
+      targetPort: 80 # the port the fe PODs listen to inside the cluster
+      nodePort: 30001 # the port accessible from OUTSIDE the cluster (from the browser)

@@ -47,6 +47,21 @@ we'll thus configure a BE service deployment config.
 5. if postgres answers then everything is working right :)
 
 
+# Step 4 - the FE
+this is very similar to the BE part
+a. we create a deployment file for the fe
+b. we create a service file for the fe
+
+the service file for the fe though is a bit special. as it has a "type: NodePort" (defined under the spec section) and in addition we define a "nodePort: 30001" to make it externally accessible from outside the cluster.
+
+run: minikube service fe-service --url # this gets an accessible URL for the FE
+
+the port might be different if you're running inside a docker container! so its accessible now INSIDE the docker network.
+in order to resolve that, minikube opens an SSH tunnel with a random available port on the HOST (mac) and tunnels it to nodePort (30001)
+thats why the terminal must stay open so it doesn't collapse the SSH tunnel by minikube
+
+ALTERNATIVELY - you can do portforwarding: kubectl port-forward svc/fe-service 8080:80 and access the fe on localhost:8080
+
 
 
 
