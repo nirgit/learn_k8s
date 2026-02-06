@@ -35,6 +35,22 @@ this is the actual controller that will run the PGSQL container, fetch the pswd 
 4. you can see it by running: `kubectl get services` (postgres-service should be listed)
 
 
+# Step 3 - the BE
+this is where our application code lives. most importantly we need our BE in K8S know how to talk to our DB serice.
+we use service name in order to do that (postgres-service)
+we'll thus configure a BE service deployment config.
+
+1. create a file named: `backend-deployment.yaml` 
+2. apply the BE deployment: `kubectl apply -f backend-deployment.yaml` 
+3. make sure the pod is up (kubectl get pods)
+4. once READY you should check if the BE service can reach the DB, run: `kubectl exec <your-backend-pod-name> -- curl -v postgres-service:5432`
+5. if postgres answers then everything is working right :)
+
+
+
+
+
+
 ### links
 Gemini converation: https://gemini.google.com/app/6d9520626a6818c5
 
