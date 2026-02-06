@@ -26,9 +26,13 @@ this is the actual controller that will run the PGSQL container, fetch the pswd 
 3. lets apply the statefulset config, and run: `kubectl apply -f posgres-statefulset.yaml` 
 4. watch the progress with: `kubectl get pods -w`  (should see its READY and STATUS change)
 5. verify the connecting to the DB by running `kubectl exec postgres-0 -- env | grep POSTGRES` 
+6. congrats you now have a running Posgres DB in your K8S cluster!
 
-
-
+## The DB Service
+1. create a file called `postgres-service.yaml`
+2. apply the config with: `kubectl apply -f postgres-service.yaml` 
+3. congrats now you have a postgres service that talks to the DB other Services can connect to
+4. you can see it by running: `kubectl get services` (postgres-service should be listed)
 
 
 ### links
