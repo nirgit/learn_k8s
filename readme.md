@@ -136,6 +136,31 @@ helm upgrade k8s-learning-app ./my-app-stack
 ```
 - it should create a new revision for the app
 
+
+## Step 6 - Apps
+under /apps you can find 2 custom applications:
+1. backend - a backend app/service
+2. bff - the backend for frontend (fe) service
+
+they're both containerized apps that should be built using the
+`build_docker_image.sh` files.
+however, in order to make sure that the docker images are stored locally
+for minikube you should run the `init_shell_for_minikube.sh`
+- verify the images are built as expected running `docker images`
+
+once you see them there, you can run helm upgrade to deploy the
+apps and apply recent K8S and app changes to the cluster.
+`helm upgrade k8s-learning-app ./my-app-stack`
+
+››
+After you're done deploying with helm (helm upgrade ...)
+you can run port-forward command to the fe or simply just let
+minikube do it automatically for you with:
+```bash
+minikube service fe-service
+```
+
+
 ### links
 Gemini converation: https://gemini.google.com/app/6d9520626a6818c5
 
