@@ -7,6 +7,10 @@
 
 fe:
   replicaCount: 1
+  image:
+    repository: "my-bff-app"
+    tag: "0.0.1"
+    pullPolicy: IfNotPresent # This means that Kubernetes will only pull the image if it doesn't already exist on the node, which is ideal for local development with Minikube.
 
 backend:
   replicaCount: 1

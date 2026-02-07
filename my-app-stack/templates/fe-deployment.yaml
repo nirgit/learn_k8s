@@ -14,10 +14,13 @@ spec:
     spec:
       containers:
       - name: fe
-        image: nginx:latest 
+        image: {{ .Values.fe.image.repository }}:{{ .Values.fe.image.tag }}
+        imagePullPolicy: {{ .Values.fe.image.pullPolicy | default "IfNotPresent" }}
         ports:
         - containerPort: 80
         env:
         - name: BACKEND_SERVICE
           value: {{ .Values.backend.service.name }} # This matches our Service name!
+        - name: BACKEND_URL
+          value: "http://{{ .Values.backend.service.name }}" # This matches our Service name!
 
