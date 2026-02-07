@@ -54,14 +54,46 @@ b. we create a service file for the fe
 
 the service file for the fe though is a bit special. as it has a "type: NodePort" (defined under the spec section) and in addition we define a "nodePort: 30001" to make it externally accessible from outside the cluster.
 
-run: minikube service fe-service --url # this gets an accessible URL for the FE
+run: `minikube service fe-service --url` # this gets an accessible URL for the FE
 
 the port might be different if you're running inside a docker container! so its accessible now INSIDE the docker network.
 in order to resolve that, minikube opens an SSH tunnel with a random available port on the HOST (mac) and tunnels it to nodePort (30001)
 thats why the terminal must stay open so it doesn't collapse the SSH tunnel by minikube
 
-ALTERNATIVELY - you can do portforwarding: kubectl port-forward svc/fe-service 8080:80 and access the fe on localhost:8080
+ALTERNATIVELY - you can do portforwarding: `kubectl port-forward svc/fe-service 8080:80` and access the fe on `localhost:8080`
 
+
+# Step 5 - HELM Charts
+Helm is like a package manager for K8S, similar to what NPM is for Node or pip for Python. 
+
+The problem: solving is the "YAML Fatigue"
+- we keep writing static YAML files, which is fine for one person on a laptop or for a very very small project.
+- But as the project grows:
+    1. Hardcoded values: if you wanna change PG DB password, you need to find and replace it in the Secret, the StatefulSet and the BE Deployment.
+    2. If you want to create a "Testing" and "Prod" versions of the app, the files would need to be duplicated.
+    3. No versioning. If you update the backend and it crashes, kubectl doesnt have an easy undo to roll back to a prev working version.
+
+The solution: Charts and Templates
+Helm solves those problems by turning those YAML files into Templates!
+so hardcoded values like:
+    "postgres-service" turn into -> {{ .Values.dbName }}
+
+All those specific settings are kept in a single file called `values.yaml`
+
+when you "install" the chart, Helm combines the templates with the values to create the final manifest.
+
+*A Helm chart* is essentially a folder that includes the combination of the Templates with the Values and some metadata.
+
+To rampup a skeleton of the first Helm chart, run:
+> `brew install helm`
+> `helm create my-app-stack`
+
+This creates a skeleton Helm chart.
+
+1. We will delete all files in the `templates` directory except the NOTES.txt and `_helpers.tpl`
+2. We'll move our YAML files into the `templates` dir
+3. We now have a VALID Helm project, even though its not leveraging the templates and values
+4. Dry-run check with: `helm install my-test-release ./my-app-stack --dry-run` - you should see all the yaml files with their values
 
 
 
