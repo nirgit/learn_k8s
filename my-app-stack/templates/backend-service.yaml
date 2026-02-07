@@ -8,5 +8,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80 # the port the service listens to
-      targetPort: 80 # the port to send the traffic to on the pods
+      targetPort: {{ .Values.backend.port }} # the port to send the traffic to on the pods
 

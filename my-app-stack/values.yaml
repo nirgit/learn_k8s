@@ -11,12 +11,18 @@ fe:
 backend:
   replicaCount: 1
   service:
-    name: backend-service
+    name: "backend-service"
+  image:
+    repository: "my-backend-app"
+    tag: "0.0.1"
+    pullPolicy: IfNotPresent # This means that Kubernetes will only pull the image if it doesn't already exist on the node, which is ideal for local development with Minikube.
+  port: 8080
 
 database:
   password: "SuperSecret123"
 
 postgres:
+  serviceName: postgres-service
   storageSize: "1Gi"
   secretName: db-secret
 

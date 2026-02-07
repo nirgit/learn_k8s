@@ -14,12 +14,13 @@ spec:
     spec:
       containers:
       - name: backend
-        image: nginx:latest #datawire/hello-world-backend:1.0.0 # A simple test image
+        image: {{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}
+        imagePullPolicy: {{ .Values.backend.image.pullPolicy | default "IfNotPresent" }}
         ports:
-        - containerPort: 80
+        - containerPort: {{ .Values.backend.port }}
         env:
         - name: DB_HOST
-          value: "postgres-service" # This matches our Service name!
+          value: {{ .Values.postgres.serviceName | quote }} # This should match the Service name for Postgres
         - name: DB_USER
           valueFrom:
             secretKeyRef:
