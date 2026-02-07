@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: fe
 spec:
-  replicas: 1
+  replicas: {{ .Values.fe.replicaCount }}
   selector:
     matchLabels:
       app: fe
@@ -19,5 +19,5 @@ spec:
         - containerPort: 80
         env:
         - name: BACKEND_SERVICE
-          value: "backend-service"
+          value: {{ .Values.backend.service.name }} # This matches our Service name!
 

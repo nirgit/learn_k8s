@@ -95,8 +95,46 @@ This creates a skeleton Helm chart.
 3. We now have a VALID Helm project, even though its not leveraging the templates and values
 4. Dry-run check with: `helm install my-test-release ./my-app-stack --dry-run` - you should see all the yaml files with their values
 
+**Real deployment**
+After doing more tweaks on the `values.yaml` file, and in order to deploy the application with Helm we run a cleanup first:
+```bash
+kubectl delete pvc postgres-pvc
+kubectl delete statefulset postgres
+kubectl delete deployment backend frontend
+kubectl delete svc postgres-service backend-service fe-service 
+```
 
+and after that, run the Helm install command:
+```bash
+helm install k8s-learning-app ./my-app-stack
+```
+parameters:
+1. the 1st parameter is the name of the release
+2. the 2nd parameter is the name of the helm chart
 
+The install `STATUS` should be set to `deployed`
+
+then you can re-run the port-forwrading for accessing the FE:
+```bash
+kubectl port-forward svc/fe-service 8080:80
+```
+
+### valdidation
+1. lets make sure everything is running as we expect it to (pods, services & stateset):
+```bash
+kubectl get all
+```
+2. lets check that the FE can reach the BE service with:
+```bash
+kubectl exec <frontend-pod-name> -- curl -I http://backend-service
+```
+
+### upgrading a chart
+after making changes to the config files (yaml), you can run:
+```bash
+helm upgrade k8s-learning-app ./my-app-stack
+```
+- it should create a new revision for the app
 
 ### links
 Gemini converation: https://gemini.google.com/app/6d9520626a6818c5
