@@ -160,6 +160,8 @@ minikube do it automatically for you with:
 minikube service fe-service
 ```
 
+What you should expect to see later in the browser
+![step6 outcome](step6-outcome.png)
 
 ### links
 Gemini converation: https://gemini.google.com/app/6d9520626a6818c5
