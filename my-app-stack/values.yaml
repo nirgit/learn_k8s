@@ -16,6 +16,10 @@ backend:
 database:
   password: "SuperSecret123"
 
+postgres:
+  storageSize: "1Gi"
+  secretName: db-secret
+
 
 
 

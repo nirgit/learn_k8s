@@ -1,0 +1,1 @@
+helm upgrade k8s-learning-app ./my-app-stack
