@@ -1,23 +1,28 @@
-# Step 1 - Infra setup
+# A guide on How to set up and use K8S with Helm charts
+The guide below is a quick-crash-course in learning how to set up your own K8S Cluster locally on your Docker
+and Deploying your apps on it using Helm.
+- The apps simulated in this quick learning guide are a PG DB, BE service & a FE/BFF
+
+## Step 1 - Infra setup
 1. installing minikube with: `brew install minikube`
 2. ensure docker is running on the machine, and set minikube to use docker as its driver: `minikube config set driver docker`
 3. the last command makes k8s run inside a container in docker. then start it with: `minikube start` 
 4. now that minikube started, we use kubectl to talk to our cluster - run `kubectl get nodes` 
 5. run `kubectl config get-contexts` to ensure that our kubectl is talking to the minikube cluster we installed (check where * is pointing at) 
 
-# Step 2 - installing DB 
+## Step 2 - installing DB 
 1. setting up a secret
 2. setting a PVC (claiming space on HDD that survives in case of pod crashing/restarting)
 3. setting up StatefulSet to run the PGDB container and link it to the PVC
 
-## Secret
+### Secret
 1. create the secret with kubectl: `kubectl create secret generic db-secret --from-literal=username=admin --from-literal=password=SuperSecret123`
 2. creating PVC with: `kubectl get pvc` to check if there is anything
 3. create 1GB file for disk space by creating a new file called `postgres-pvc.yaml` 
 4. run the command `kubectl apply -f postgres-pvc.yaml` 
 5. run `kubectl get pvc` to make sure it was created
 
-## StatefulSet
+### StatefulSet
 this is the actual controller that will run the PGSQL container, fetch the pswd from the secret and plug in the storage from the PVC
 - a controller is a background process watching the cluster state making changes to ensure actual state matches desired state
 1. creae a file called `postgres-statefulset.yaml`
@@ -28,14 +33,14 @@ this is the actual controller that will run the PGSQL container, fetch the pswd 
 5. verify the connecting to the DB by running `kubectl exec postgres-0 -- env | grep POSTGRES` 
 6. congrats you now have a running Posgres DB in your K8S cluster!
 
-## The DB Service
+### The DB Service
 1. create a file called `postgres-service.yaml`
 2. apply the config with: `kubectl apply -f postgres-service.yaml` 
 3. congrats now you have a postgres service that talks to the DB other Services can connect to
 4. you can see it by running: `kubectl get services` (postgres-service should be listed)
 
 
-# Step 3 - the BE
+## Step 3 - the BE
 this is where our application code lives. most importantly we need our BE in K8S know how to talk to our DB serice.
 we use service name in order to do that (postgres-service)
 we'll thus configure a BE service deployment config.
@@ -47,7 +52,7 @@ we'll thus configure a BE service deployment config.
 5. if postgres answers then everything is working right :)
 
 
-# Step 4 - the FE
+## Step 4 - the FE
 this is very similar to the BE part
 a. we create a deployment file for the fe
 b. we create a service file for the fe
@@ -63,7 +68,7 @@ thats why the terminal must stay open so it doesn't collapse the SSH tunnel by m
 ALTERNATIVELY - you can do portforwarding: `kubectl port-forward svc/fe-service 8080:80` and access the fe on `localhost:8080`
 
 
-# Step 5 - HELM Charts
+## Step 5 - HELM Charts
 Helm is like a package manager for K8S, similar to what NPM is for Node or pip for Python. 
 
 The problem: solving is the "YAML Fatigue"
@@ -119,7 +124,7 @@ then you can re-run the port-forwrading for accessing the FE:
 kubectl port-forward svc/fe-service 8080:80
 ```
 
-### valdidation
+### Valdidation
 1. lets make sure everything is running as we expect it to (pods, services & stateset):
 ```bash
 kubectl get all
@@ -129,7 +134,7 @@ kubectl get all
 kubectl exec <frontend-pod-name> -- curl -I http://backend-service
 ```
 
-### upgrading a chart
+### Upgrading a chart
 after making changes to the config files (yaml), you can run:
 ```bash
 helm upgrade k8s-learning-app ./my-app-stack
